@@ -19,7 +19,10 @@ def dev_screen(loading=bool, filename=str):
     mainarea = Canvas(master, bg='white', width=500, height=500)   
     sidebar.pack(expand=True, fill='both', side='left', anchor='nw')
     sidebar.config(highlightthickness=2, highlightbackground="black")
-    sidebar_speedo = sidebar_icon(sidebar, mainarea, "Speed", 10, 10, 60, 60)
+    sidebar_icons = [
+        sidebar_icon(sidebar, mainarea, "Speed", 10, 10),
+        sidebar_icon(sidebar,mainarea, "PM", 120, 10)
+    ]
     pw.add(sidebar)
 
     # Main dev area
