@@ -3,21 +3,24 @@ from tkinter import filedialog
 import os
 
 from dash_icons import *
-from dev_classes import *
+from dev_utils import *
 
-# TODO make this work 
+# TODO make this work
+
+
 def on_sidebar_resize(event, sidebar):
     sidebar_width = event.width
     if sidebar_width < 80:
         sidebar.config(width=80)
         sidebar.after(1, lambda: sidebar.config(width=80))
 
+
 def dev_screen(loading=bool, filename=str):
     if loading:
         print("Load stuff here")
     master = Tk()
     master.title("Dashboard Designer - " + filename)
-    master.after(0, lambda:master.state('zoomed'))
+    master.after(0, lambda: master.state('zoomed'))
 
     menubar = Menu(master)
     file_menu = Menu(menubar, tearoff=0)
@@ -27,7 +30,8 @@ def dev_screen(loading=bool, filename=str):
         file_menu.add_command(label="Save", command=None, foreground="grey")
     else:
         file_menu.add_command(label="Save", command=lambda: print("Save"))
-    file_menu.add_command(label="Save As...", command=lambda: print("Save As..."))
+    file_menu.add_command(label="Save As...",
+                          command=lambda: print("Save As..."))
     file_menu.add_separator()
     file_menu.add_command(label="Exit", command=master.quit)
     menubar.add_cascade(label="File", menu=file_menu)
@@ -37,11 +41,13 @@ def dev_screen(loading=bool, filename=str):
     pw.pack(fill='both', expand=True)
 
     # Sidebar for icons
-    sidebar = Canvas(master, width=150, bg='#CCC', height=500, relief='sunken', borderwidth=2)
-    mainarea = Canvas(master, bg='grey', width=500, height=500)   
+    sidebar = Canvas(master, width=150, bg='#CCC', height=500,
+                     relief='sunken', borderwidth=2)
+    mainarea = Canvas(master, bg='grey', width=500, height=500)
     sidebar.pack(expand=True, fill='both', side='left', anchor='nw')
     sidebar.config(highlightthickness=2, highlightbackground="black")
-    sidebar.bind("<Configure>", lambda event: on_sidebar_resize(event, sidebar))
+    sidebar.bind(
+        "<Configure>", lambda event: on_sidebar_resize(event, sidebar))
     '''Types are:
     - Speed
     - RPM

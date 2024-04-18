@@ -1,80 +1,98 @@
 import tkinter as tk
 from tkinter import colorchooser
 from config_window import *
-global icon_list
+global icon_list, ids
 icon_list = []
+ids = 1
+
 
 def get_icon_list():
     return icon_list
-    
+
+
+def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
+    return_data = []
+    match type:
+        case "Speed":
+            shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
+            if has_label:
+                label_text = "Speedometer"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "RPM":
+            shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
+            if has_label:
+                label_text = "Tachometer"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "Fuel Temp":
+            shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
+            if has_label:
+                label_text = "Fuel and Temperature"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "Fuel":
+            shape = canvas.create_rectangle(
+                x, y, x + width, y + height/2, fill=color)
+            if has_label:
+                label_text = "Fuel Gague"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "Temp":
+            shape = canvas.create_rectangle(
+                x, y, x + width, y + height/2, fill=color)
+            if has_label:
+                label_text = "Temperature Gague"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "Volt Circle":
+            shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
+            if has_label:
+                label_text = "Voltmeter Gague"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "Volt Linear":
+            shape = canvas.create_rectangle(
+                x, y, x + width, y + height/2, fill=color)
+            if has_label:
+                label_text = "Linear Voltmeter"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case _:
+            shape = canvas.create_oval(x, y, x + width, y + height, fill="red")
+            if has_label:
+                label_text = "ERROR"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, color="red", width=80, anchor="center")
+    return_data.append(shape)
+    if has_label:
+        return_data.append(label)
+    return return_data
+
 
 class SidebarIcon:
     def __init__(self, canvas, spawn_canvas, type, x, y, width=60, height=60, color="blue") -> None:
         self.canvas = canvas
         self.spawn = spawn_canvas
         self.type = type
-        self.shape = tk.Canvas(canvas, width=width, height=height, bg='white', highlightthickness=0)
-        match type:
-            case "Speed":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-                self.label_text = "Speedometer"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case "RPM":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-                self.label_text = "Tachometer"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case "Fuel Temp":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-                self.label_text = "Fuel and Temperature"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case "Fuel":
-                self.shape = canvas.create_rectangle(x, y, x + width, y + height/2, fill=color)
-                self.label_text = "Fuel Gague"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case "Temp":
-                self.shape = canvas.create_rectangle(x, y, x + width, y + height/2, fill=color)
-                self.label_text = "Temperature Gague"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case "Volt Circle":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-                self.label_text = "Voltmeter Gague"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case "Volt Linear":
-                self.shape = canvas.create_rectangle(x, y, x + width, y + height/2, fill=color)
-                self.label_text = "Linear Voltmeter"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, width=80, anchor="center")
-            case _:
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill="red")
-                self.label_text = "ERROR"
-                self.label = canvas.create_text(x + width / 2, y + height + 10, text=self.label_text, color="red", width=80, anchor="center")
+        shape_data = get_shape_from_type(
+            self.canvas, self.type, True, x, y, width, height, color)
+        self.shape = shape_data[0]
+        self.label = shape_data[1]
         self.canvas.tag_bind(self.shape, "<Button-1>", self.spawn_object)
 
     def spawn_object(self, event):
-        #x, y = self.canvas.coords(self.shape)[:2]  # Get the top-left corner coordinates of the miniature icon
-        icon = MovableIcon(self.spawn, self.type, 10, 10, 50, 50)  # Spawn a new instance of MovableIcon at the same position
+        # Spawn a new instance of MovableIcon at the same position
+        icon = MovableIcon(self.spawn, self.type, 10, 10, 50, 50)
 
 
 class MovableIcon:
     def __init__(self, canvas, type, x, y, width, height, color="blue"):
         self.canvas = canvas
         self.type = type
-        match type:
-            case "Speed":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-            case "RPM":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-            case "Fuel Temp":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-            case "Fuel":
-                self.shape = canvas.create_rectangle(x, y, x+ width, y + height, fill= color)
-            case "Temp":
-                self.shape = canvas.create_rectangle(x, y, x+ width, y + height, fill= color)
-            case "Volt Circle":
-                self.shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
-            case "Volt Linear":
-                self.shape = canvas.create_rectangle(x, y, x+ width, y + height, fill= color)
-            case _:
-                self.shape = canvas.create_rectangle(x, y, x + width, y + height, fill="red")
+        shape_data = get_shape_from_type(
+            self.canvas, self.type, False, x, y, width, height, color)
+        self.shape = shape_data[0]
         self.canvas.tag_bind(self.shape, "<Button-1>", self.on_press)
         self.canvas.tag_bind(self.shape, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(self.shape, "<ButtonRelease-1>", self.on_release)
@@ -104,15 +122,16 @@ class MovableIcon:
         else:
             new_x = event.x
             new_y = event.y
-            self.canvas.move(self.shape, new_x - self.prev_x, new_y - self.prev_y)
+            self.canvas.move(self.shape, new_x - self.prev_x,
+                             new_y - self.prev_y)
             self.prev_x = new_x
             self.prev_y = new_y
 
     def on_release(self, event):
         self.resizing = False
-        
-    def change_colour(self, colour):
-        self.canvas.itemconfig(self.shape, fill=colour)
+
+    def change_color(self, color):
+        self.canvas.itemconfig(self.shape, fill=color)
 
 
 if __name__ == "__main__":
