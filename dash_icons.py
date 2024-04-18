@@ -1,5 +1,12 @@
 import tkinter as tk
 from tkinter import colorchooser
+from config_window import *
+global icon_list
+icon_list = []
+
+def get_icon_list():
+    return icon_list
+    
 
 class SidebarIcon:
     def __init__(self, canvas, spawn_canvas, type, x, y, width=60, height=60, color="blue") -> None:
@@ -45,26 +52,7 @@ class SidebarIcon:
     def spawn_object(self, event):
         #x, y = self.canvas.coords(self.shape)[:2]  # Get the top-left corner coordinates of the miniature icon
         icon = MovableIcon(self.spawn, self.type, 10, 10, 50, 50)  # Spawn a new instance of MovableIcon at the same position
-        
-class ConfigWindow(tk.Toplevel):
-    def __init__(self, parent, movable_icon):
-        super().__init__(parent)
-        self.movable_icon = movable_icon
-        self.title("Icon Configuration")
-        self.geometry("300x150")
 
-        color_label = tk.Label(self, text="Color:")
-        color_label.pack()
-        self.color_button = tk.Button(self, text="Choose Color", command=self.choose_color)
-        self.color_button.pack()
-
-        apply_button = tk.Button(self, text="Apply", command=self.apply_changes)
-        apply_button.pack()
-
-        def choose_color(self):
-        color = colorchooser.askcolor(title="Choose Color")
-        if color[0]:
-            self.movable_icon.change_color(color[1])
 
 class MovableIcon:
     def __init__(self, canvas, type, x, y, width, height, color="blue"):
@@ -90,7 +78,6 @@ class MovableIcon:
         self.canvas.tag_bind(self.shape, "<Button-1>", self.on_press)
         self.canvas.tag_bind(self.shape, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(self.shape, "<ButtonRelease-1>", self.on_release)
-        self.canvas.tag_bind(self.shape, "<Button-2>", self.open_config)
         self.prev_x = 0
         self.prev_y = 0
         self.resizing = False
@@ -100,7 +87,7 @@ class MovableIcon:
         self.prev_y = event.y
         if event.state & 0x1:
             self.resizing = True
-        elif event.state & 0x4:
+        elif event.state & 0x4 and self.type != "ERROR":
             config_window = ConfigWindow(self.canvas.master, self)
         else:
             self.resizing = False
@@ -124,6 +111,9 @@ class MovableIcon:
     def on_release(self, event):
         self.resizing = False
         
+    def change_colour(self, colour):
+        self.canvas.itemconfig(self.shape, fill=colour)
+
 
 if __name__ == "__main__":
     root = tk.Tk()

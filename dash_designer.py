@@ -1,5 +1,4 @@
 from tkinter import *
-import tkinter as tk
 from tkinter import filedialog
 import os
 from dev_screen import *
@@ -26,22 +25,22 @@ def open_files():
 														"*.txt*"),
 													("all files",
 														"*.*")))
+	return filename
 
 def new_project():
 	filename = create_files()
-	print(filename)
-	master.destroy()
-	dev_screen(False, filename)
+	if filename:
+		master.destroy()
+		dev_screen(False, filename)
 	
-
 def open_project():
 	filename = open_files()
-	print(filename)
-	master.destroy()
-	dev_screen(True, filename)
+	if filename:
+		master.destroy()
+		dev_screen(True, filename)
 
 title_label = Label(master, text="Dashboard Designer", width= 100, height=4)
 new_button = Button(master, text="New Project", width=25, command=new_project)
-existing_button = Button(master, text="Open Existing", width=25, command=open_files)
+existing_button = Button(master, text="Open Existing", width=25, command=open_project)
 title_label.pack(), new_button.pack(), existing_button.pack()
 master.mainloop()
