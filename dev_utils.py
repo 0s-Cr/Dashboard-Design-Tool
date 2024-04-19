@@ -53,3 +53,19 @@ class DevArea:
                         shape_type = shape_tags[0]
                         overlapping_shapes.append((shape_id, shape_type))
         return overlapping_shapes
+
+class IconManager:
+    def __init__(self):
+        self.icon_list = []
+
+    def __str__(self):
+        return f"{self.icon_list}"
+    
+    def get_list(self):
+        return self.icon_list
+    
+    def sort_key(self, item):
+        return item[0]
+
+    def add_icon(self, icon):
+        self.icon_list.append(icon)

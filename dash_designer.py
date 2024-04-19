@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import filedialog
-import os
 from dev_screen import *
 from dev_utils import *
 

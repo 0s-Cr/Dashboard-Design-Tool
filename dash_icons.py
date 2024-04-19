@@ -1,16 +1,10 @@
 import tkinter as tk
 from tkinter import colorchooser
 from config_window import *
-global icon_list, ids
-icon_list = []
-ids = 1
-
-
-def get_icon_list():
-    return icon_list
 
 
 def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
+    # Returns an array of the shape type and a label (if has_label is True)
     return_data = []
     match type:
         case "Speed":
@@ -71,7 +65,8 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
 
 
 class SidebarIcon:
-    def __init__(self, canvas, spawn_canvas, type, x, y, width=60, height=60, color="blue") -> None:
+    def __init__(self, manager, canvas, spawn_canvas, type, x, y, width=60, height=60, color="blue") -> None:
+        self.manager = manager
         self.canvas = canvas
         self.spawn = spawn_canvas
         self.type = type
@@ -82,12 +77,13 @@ class SidebarIcon:
         self.canvas.tag_bind(self.shape, "<Button-1>", self.spawn_object)
 
     def spawn_object(self, event):
-        # Spawn a new instance of MovableIcon at the same position
-        icon = MovableIcon(self.spawn, self.type, 10, 10, 50, 50)
+        # Spawn a new instance of MovableIcon on the spawn canvas
+        icon = MovableIcon(self.manager, self.spawn, self.type, 10, 10, 50, 50)
 
 
 class MovableIcon:
-    def __init__(self, canvas, type, x, y, width, height, color="blue"):
+    def __init__(self, manager, canvas, type, x, y, width, height, color="blue"):
+        self.manager = manager
         self.canvas = canvas
         self.type = type
         shape_data = get_shape_from_type(
@@ -101,6 +97,7 @@ class MovableIcon:
         self.resizing = False
 
     def on_press(self, event):
+        # Actions when clicked with certain modifiers
         self.prev_x = event.x
         self.prev_y = event.y
         if event.state & 0x1:
@@ -111,6 +108,7 @@ class MovableIcon:
             self.resizing = False
 
     def on_drag(self, event):
+        # Actions when dragged
         if self.resizing:
             width = event.x - self.canvas.coords(self.shape)[0]
             if self.type in ["Speed", "RPM", "Fuel Temp", "Voltmeter Gague"]:
