@@ -15,13 +15,16 @@ def update_title_save(master, dev_area):
     master.title("Dashboard Designer - " + filename)
 
 
-def update_title_open(master, manager, canvas):
+def open_devscreen(master, manager, canvas):
     filename = load_files(False, None, manager, canvas)
-    master.title("Dashboard Designer - " + filename)
+    master.destroy()
+    dev_screen(True, filename)
+
 
 def new_project(master):
     master.destroy()
     dev_screen(False, "No File")
+
 
 def dev_screen(loading=bool, filename=str):
     master = Tk()
@@ -47,7 +50,7 @@ def dev_screen(loading=bool, filename=str):
     file_menu = Menu(menubar, tearoff=0)
     file_menu.add_command(label="New", command=lambda: new_project(master))
     file_menu.add_command(
-        label="Open", command=lambda: update_title_open(master, manager, mainarea))
+        label="Open", command=lambda: open_devscreen(master, manager, mainarea))
     if filename == "No File":
         file_menu.add_command(label="Save", command=None, foreground="grey")
     else:
