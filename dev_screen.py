@@ -1,7 +1,4 @@
 from tkinter import *
-from tkinter import filedialog
-import os
-import ast
 
 from dash_icons import *
 from dev_utils import *

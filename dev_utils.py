@@ -17,10 +17,6 @@ class DevArea:
         if event.state & 0x4:
             print(self.check_for_shapes())
 
-    def clear_area(self):
-        for i in self.canvas.getall():
-            if i != self.shape:
-                i.destroy()
 
     def check_for_shapes(self):
         overlapping_shapes = []

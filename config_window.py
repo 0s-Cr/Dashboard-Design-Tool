@@ -7,7 +7,8 @@ class ConfigWindow(tk.Toplevel):
         super().__init__(parent)
         self.window = tk.Toplevel
         self.movable_icon = movable_icon
-        self.title("Icon Configuration")
+        self.type = self.movable_icon.type
+        self.title(f"{self.type} Configuration")
         self.geometry("300x150")
 
         self.color = self.movable_icon.canvas.itemcget(

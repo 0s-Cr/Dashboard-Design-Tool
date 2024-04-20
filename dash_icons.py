@@ -100,6 +100,7 @@ class MovableIcon:
         self.prev_x = 0
         self.prev_y = 0
         self.resizing = False
+        self.selected = False
         self.id = self.manager.add_icon(
             self.shape, [self.type, self.coords, [width, height], color])
 
