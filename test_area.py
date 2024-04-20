@@ -10,3 +10,6 @@ while i < len(list_ex):
 print(len(list_ex))
 print(list_ex)
 
+from dev_utils import *
+
+manager = IconManager()

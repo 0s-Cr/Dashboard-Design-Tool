@@ -23,7 +23,8 @@ def open_files():
 
 
 class DevArea:
-    def __init__(self, canvas, x, y, width, height, color="white"):
+    def __init__(self, manager, canvas, x, y, width, height, color="white"):
+        self.manager = manager
         self.canvas = canvas
         self.shape = canvas.create_rectangle(
             x, y, x + width, y + height, fill=color)
@@ -43,29 +44,31 @@ class DevArea:
     def check_for_shapes(self):
         overlapping_shapes = []
         x1, y1, x2, y2 = self.canvas.coords(self.shape)
-        for shape_id in self.canvas.find_all():
-            if shape_id != self.shape:
-                other_x1, other_y1, other_x2, other_y2 = self.canvas.coords(
-                    shape_id)
-                if (x1 < other_x2 and x2 > other_x1) and (y1 < other_y2 and y2 > other_y1):
-                    shape_tags = self.canvas.gettags(shape_id)
-                    if shape_tags:  # Check if tags exist
-                        shape_type = shape_tags[0]
-                        overlapping_shapes.append((shape_id, shape_type))
+        for i in self.manager.icon_list:
+            if i[0] != self.shape:
+                other_x1, other_y1, other_x2, other_y2 = i[1][1]
+                print(x1, x2, y1, y2)
+                print(other_x1, other_x2, other_y1, other_y2)
+                if (x1 < other_x1 and x2 > other_x2) and (y1 < other_y1 and y2 > other_y2):
+                    overlapping_shapes.append([i])
+        print(self.manager)
         return overlapping_shapes
 
 class IconManager:
     def __init__(self):
         self.icon_list = []
+        self.id_counter = 0
 
     def __str__(self):
         return f"{self.icon_list}"
     
-    def get_list(self):
-        return self.icon_list
-    
-    def sort_key(self, item):
-        return item[0]
+    def add_icon(self, id, icon):
+        self.icon_list.append([id, icon])
+        return id
 
-    def add_icon(self, icon):
-        self.icon_list.append(icon)
+    def update_icon(self, id, data):
+        for i in range(0, len(self.icon_list)):
+            if self.icon_list[i][0] == id:
+                self.icon_list[i][1] = data
+                
+

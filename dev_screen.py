@@ -22,6 +22,9 @@ def dev_screen(loading=bool, filename=str):
     master.title("Dashboard Designer - " + filename)
     master.after(0, lambda: master.state('zoomed'))
 
+    # Icon manager
+    manager = IconManager()
+
     menubar = Menu(master)
     file_menu = Menu(menubar, tearoff=0)
     file_menu.add_command(label="New", command=lambda: print("New"))
@@ -58,18 +61,18 @@ def dev_screen(loading=bool, filename=str):
     - Volt Linear
     Any other entry will result in an ERROR figure (red circle which spawns a red square)'''
     sidebar_icons_list = [
-        SidebarIcon(sidebar, mainarea, "Speed", 10, 10),
-        SidebarIcon(sidebar, mainarea, "RPM", 90, 10),
-        SidebarIcon(sidebar, mainarea, "Fuel Temp", 10, 120),
-        SidebarIcon(sidebar, mainarea, "Fuel", 90, 120),
-        SidebarIcon(sidebar, mainarea, "Temp", 10, 240),
-        SidebarIcon(sidebar, mainarea, "Volt Circle", 90, 240),
-        SidebarIcon(sidebar, mainarea, "Volt Linear", 10, 360)
+        SidebarIcon(manager, sidebar, mainarea, "Speed", 10, 10),
+        SidebarIcon(manager, sidebar, mainarea, "RPM", 90, 10),
+        SidebarIcon(manager, sidebar, mainarea, "Fuel Temp", 10, 120),
+        SidebarIcon(manager, sidebar, mainarea, "Fuel", 90, 120),
+        SidebarIcon(manager, sidebar, mainarea, "Temp", 10, 240),
+        SidebarIcon(manager, sidebar, mainarea, "Volt Circle", 90, 240),
+        SidebarIcon(manager, sidebar, mainarea, "Volt Linear", 10, 360)
     ]
     pw.add(sidebar)
 
     # Main dev area
-    dev_area = DevArea(mainarea, 4, 100, 750, 500)
+    dev_area = DevArea(manager, mainarea, 4, 100, 750, 500)
 
     mainarea.pack(expand=True, fill='both', side='right')
     pw.add(mainarea)
