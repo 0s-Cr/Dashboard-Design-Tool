@@ -5,8 +5,6 @@ from dev_utils import *
 master = Tk()
 master.title("Dashboard Designer")
 master.geometry("750x500")
-global filename
-filename = ""
 
 
 def new_project():

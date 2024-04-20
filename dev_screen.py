@@ -1,44 +1,35 @@
 from tkinter import *
 from tkinter import filedialog
 import os
+import ast
 
 from dash_icons import *
 from dev_utils import *
+from file_managment import *
 
-# TODO make this work
+global filename
 
 
-def on_sidebar_resize(event, sidebar):
-    sidebar_width = event.width
-    if sidebar_width < 80:
-        sidebar.config(width=80)
-        sidebar.after(1, lambda: sidebar.config(width=80))
+def update_title_save(master, dev_area):
+    filename = save_dash(True, None, dev_area)
+    master.title("Dashboard Designer - " + filename)
 
+
+def update_title_open(master, manager, canvas):
+    filename = load_files(False, None, manager, canvas)
+    master.title("Dashboard Designer - " + filename)
+
+def new_project(master):
+    master.destroy()
+    dev_screen(False, "No File")
 
 def dev_screen(loading=bool, filename=str):
-    if loading:
-        print("Load stuff here")
     master = Tk()
     master.title("Dashboard Designer - " + filename)
     master.after(0, lambda: master.state('zoomed'))
 
     # Icon manager
     manager = IconManager()
-
-    menubar = Menu(master)
-    file_menu = Menu(menubar, tearoff=0)
-    file_menu.add_command(label="New", command=lambda: print("New"))
-    file_menu.add_command(label="Open", command=lambda: print("Open"))
-    if filename == "No File":
-        file_menu.add_command(label="Save", command=None, foreground="grey")
-    else:
-        file_menu.add_command(label="Save", command=lambda: print("Save"))
-    file_menu.add_command(label="Save As...",
-                          command=lambda: print("Save As..."))
-    file_menu.add_separator()
-    file_menu.add_command(label="Exit", command=master.quit)
-    menubar.add_cascade(label="File", menu=file_menu)
-    master.config(menu=menubar)
 
     pw = PanedWindow(orient='horizontal')
     pw.pack(fill='both', expand=True)
@@ -47,10 +38,31 @@ def dev_screen(loading=bool, filename=str):
     sidebar = Canvas(master, width=150, bg='#CCC', height=500,
                      relief='sunken', borderwidth=2)
     mainarea = Canvas(master, bg='grey', width=500, height=500)
+
+    # Main dev area
+    dev_area = DevArea(manager, mainarea, 4, 100, 750, 500)
+
+    # Menu bar
+    menubar = Menu(master)
+    file_menu = Menu(menubar, tearoff=0)
+    file_menu.add_command(label="New", command=lambda: new_project(master))
+    file_menu.add_command(
+        label="Open", command=lambda: update_title_open(master, manager, mainarea))
+    if filename == "No File":
+        file_menu.add_command(label="Save", command=None, foreground="grey")
+    else:
+        file_menu.add_command(
+            label="Save", command=lambda: save_dash(False, filename, dev_area))
+    file_menu.add_command(label="Save As...",
+                          command=lambda: update_title_save(master, dev_area))
+    file_menu.add_separator()
+    file_menu.add_command(label="Exit", command=quit)
+    menubar.add_cascade(label="File", menu=file_menu)
+    master.config(menu=menubar)
+
+    # Sidebar
     sidebar.pack(expand=True, fill='both', side='left', anchor='nw')
     sidebar.config(highlightthickness=2, highlightbackground="black")
-    sidebar.bind(
-        "<Configure>", lambda event: on_sidebar_resize(event, sidebar))
     '''Types are:
     - Speed
     - RPM
@@ -71,11 +83,11 @@ def dev_screen(loading=bool, filename=str):
     ]
     pw.add(sidebar)
 
-    # Main dev area
-    dev_area = DevArea(manager, mainarea, 4, 100, 750, 500)
-
     mainarea.pack(expand=True, fill='both', side='right')
     pw.add(mainarea)
+
+    if loading:
+        load_files(loading, filename, manager, mainarea)
 
     master.mainloop()
 

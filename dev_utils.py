@@ -1,27 +1,3 @@
-from tkinter import filedialog
-import os
-
-
-def create_files():
-    filename = filedialog.asksaveasfilename(initialdir=os.path.dirname(os.path.realpath(__file__)),
-                                            title="Select a File",
-                                            filetypes=(("Text files",
-                                                        "*.txt*"),
-                                                       ("all files",
-                                                        "*.*")))
-    return filename
-
-
-def open_files():
-    filename = filedialog.askopenfilename(initialdir=os.path.dirname(os.path.realpath(__file__)),
-                                          title="Select a File",
-                                          filetypes=(("Text files",
-                                                      "*.txt*"),
-                                                     ("all files",
-                                                      "*.*")))
-    return filename
-
-
 class DevArea:
     def __init__(self, manager, canvas, x, y, width, height, color="white"):
         self.manager = manager
@@ -47,12 +23,10 @@ class DevArea:
         for i in self.manager.icon_list:
             if i[0] != self.shape:
                 other_x1, other_y1, other_x2, other_y2 = i[1][1]
-                print(x1, x2, y1, y2)
-                print(other_x1, other_x2, other_y1, other_y2)
                 if (x1 < other_x1 and x2 > other_x2) and (y1 < other_y1 and y2 > other_y2):
-                    overlapping_shapes.append([i])
-        print(self.manager)
+                    overlapping_shapes.append(i)
         return overlapping_shapes
+
 
 class IconManager:
     def __init__(self):
@@ -61,7 +35,7 @@ class IconManager:
 
     def __str__(self):
         return f"{self.icon_list}"
-    
+
     def add_icon(self, id, icon):
         self.icon_list.append([id, icon])
         return id
@@ -70,5 +44,3 @@ class IconManager:
         for i in range(0, len(self.icon_list)):
             if self.icon_list[i][0] == id:
                 self.icon_list[i][1] = data
-                
-

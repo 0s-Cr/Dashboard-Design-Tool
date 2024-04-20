@@ -79,11 +79,12 @@ class SidebarIcon:
 
     def spawn_object(self, event):
         # Spawn a new instance of MovableIcon on the spawn canvas
-        icon = MovableIcon(self.manager, self.spawn, self.type, 10, 10, 50, 50)
+        icon = MovableIcon(self.manager, self.spawn,
+                           self.type, 10, 10, 50, 50, "blue")
 
 
 class MovableIcon:
-    def __init__(self, manager, canvas, type, x, y, width, height, color="blue"):
+    def __init__(self, manager, canvas, type, x, y, width, height, color):
         self.manager = manager
         self.canvas = canvas
         self.type = type
@@ -100,7 +101,7 @@ class MovableIcon:
         self.prev_y = 0
         self.resizing = False
         self.id = self.manager.add_icon(
-            self.shape, [self.type, (x, y), (width, height), color])
+            self.shape, [self.type, self.coords, [width, height], color])
 
     def on_press(self, event):
         # Actions when clicked with certain modifiers
@@ -144,7 +145,5 @@ class MovableIcon:
         self.update_shape()
 
     def update_shape(self):
-        self.manager.update_icon(self.id, [self.type, self.coords, (
-            self.width, self.height), self.canvas.itemcget(self.shape, "fill")])
-
-
+        self.manager.update_icon(self.id, [self.type, self.coords, [
+            self.width, self.height], self.canvas.itemcget(self.shape, "fill")])
