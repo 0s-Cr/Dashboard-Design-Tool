@@ -44,8 +44,14 @@ def load_files(loading, filename, manager, canvas):
         data = ast.literal_eval(contents)
         if isinstance(data, list):
             for i in data:
-                icon = MovableIcon(
-                    manager, canvas, i[1][0], i[1][1][0], i[1][1][1], i[1][2][0], i[1][2][1], i[1][3])
+                if len(i[1]) == 3:
+                    width = abs(i[1][1][0] - i[1][1][2])
+                    height = abs(i[1][1][1] - i[1][1][3])
+                    icon = MovableIcon(
+                        manager, canvas, i[1][0], i[1][1][0], i[1][1][1], width, height, i[1][2])
+                else:
+                    icon = MovableIcon(
+                        manager, canvas, i[1][0], i[1][1][0], i[1][1][1], i[1][2][0], i[1][2][1], i[1][3])
         else:
             print("Error loading")
         f.close()

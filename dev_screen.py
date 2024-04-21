@@ -28,8 +28,6 @@ def dev_screen(loading=bool, filename=str):
     master.title("Dashboard Designer - " + filename)
     master.after(0, lambda: master.state('zoomed'))
 
-    # Icon manager
-    manager = IconManager()
 
     pw = PanedWindow(orient='horizontal')
     pw.pack(fill='both', expand=True)
@@ -39,11 +37,15 @@ def dev_screen(loading=bool, filename=str):
                      relief='sunken', borderwidth=2)
     mainarea = Canvas(master, bg='grey', width=500, height=500)
 
+    # Icon manager
+    manager = IconManager(mainarea)
+
     # Main dev area
     dev_area = DevArea(manager, mainarea, 4, 100, 750, 500)
 
     # Menu bar
     menubar = Menu(master)
+    # File menu
     file_menu = Menu(menubar, tearoff=0)
     file_menu.add_command(label="New", command=lambda: new_project(master))
     file_menu.add_command(
@@ -58,7 +60,12 @@ def dev_screen(loading=bool, filename=str):
     file_menu.add_separator()
     file_menu.add_command(label="Exit", command=quit)
     menubar.add_cascade(label="File", menu=file_menu)
+    # Edit menu
+    edit_menu = Menu(menubar, tearoff=0)
     master.config(menu=menubar)
+    edit_menu.add_command(label="Undo", command=lambda: manager.undo_redo("z"))
+    edit_menu.add_command(label="Redo", command=lambda: manager.undo_redo("y"))
+    menubar.add_cascade(label="Edit", menu=edit_menu)
 
     # Sidebar
     sidebar.pack(expand=True, fill='both', side='left', anchor='nw')
@@ -85,6 +92,10 @@ def dev_screen(loading=bool, filename=str):
 
     mainarea.pack(expand=True, fill='both', side='right')
     pw.add(mainarea)
+
+    # Input detection
+    master.bind("<Control-z>", manager.undo_redo)
+    master.bind("<Control-y>", manager.undo_redo)
 
     if loading:
         load_files(loading, filename, manager, mainarea)

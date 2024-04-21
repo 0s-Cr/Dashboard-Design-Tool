@@ -94,15 +94,15 @@ class MovableIcon:
         self.canvas.tag_bind(self.shape, "<Button-1>", self.on_press)
         self.canvas.tag_bind(self.shape, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(self.shape, "<ButtonRelease-1>", self.on_release)
-        self.width = width
-        self.height = height
         self.coords = self.canvas.coords(self.shape)
         self.prev_x = 0
         self.prev_y = 0
         self.resizing = False
         self.selected = False
+        self.color = color
+        self.prev_icon = [self.type, self.coords, self.color]
         self.id = self.manager.add_icon(
-            self.shape, [self.type, self.coords, [width, height], color])
+            self.shape, self.prev_icon)
 
     def on_press(self, event):
         # Actions when clicked with certain modifiers
@@ -125,8 +125,6 @@ class MovableIcon:
                 height = event.y - self.canvas.coords(self.shape)[1]
             self.canvas.coords(self.shape, self.canvas.coords(self.shape)[0], self.canvas.coords(self.shape)[1],
                                self.canvas.coords(self.shape)[0] + width, self.canvas.coords(self.shape)[1] + height)
-            self.width = width
-            self.height = height
             self.canvas.coords(self.shape)
         else:
             new_x = event.x
@@ -136,15 +134,18 @@ class MovableIcon:
             self.prev_x = new_x
             self.prev_y = new_y
             self.coords = self.canvas.coords(self.shape)
-        self.update_shape()
 
     def on_release(self, event):
         self.resizing = False
+        self.update_shape()
 
     def change_color(self, color):
         self.canvas.itemconfig(self.shape, fill=color)
+        self.color = color
         self.update_shape()
 
     def update_shape(self):
-        self.manager.update_icon(self.id, [self.type, self.coords, [
-            self.width, self.height], self.canvas.itemcget(self.shape, "fill")])
+        self.manager.add_to_undo(self.id, self.prev_icon)
+        new_icon = [self.type, self.coords, self.canvas.itemcget(self.shape, "fill")]
+        self.prev_icon = new_icon
+        self.manager.update_icon(self.id, new_icon)

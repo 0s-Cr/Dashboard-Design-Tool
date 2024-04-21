@@ -30,9 +30,12 @@ class DevArea:
 
 
 class IconManager:
-    def __init__(self):
+    def __init__(self, canvas):
         self.icon_list = []
         self.id_counter = 0
+        self.undo_change = []
+        self.redo_change = []
+        self.canvas = canvas
 
     def __str__(self):
         return f"{self.icon_list}"
@@ -41,7 +44,33 @@ class IconManager:
         self.icon_list.append([id, icon])
         return id
 
+    def add_to_undo(self, id, icon):
+        self.undo_change.append([id, icon])
+
     def update_icon(self, id, data):
+        self.redo_change = []
         for i in range(0, len(self.icon_list)):
             if self.icon_list[i][0] == id:
                 self.icon_list[i][1] = data
+
+    def undo_redo(self, event):
+        if event == "z" or event.keysym.lower() == "z":
+            if self.undo_change != []:
+                data = self.undo_change[-1]
+                redo_data = [data[0], [data[0], self.canvas.coords(data[0]), self.canvas.itemcget(data[0], "fill")]]
+                self.canvas.itemconfig(data[0], fill=data[1][2])
+                self.canvas.coords(data[0], data[1][1][0], data[1][1][1], data[1][1][2], data[1][1][3])
+                self.redo_change.append(redo_data)
+                self.undo_change.pop(-1)
+            else:
+                print("No changes to undo")
+        elif event == "y" or event.keysym.lower() == "y":
+            if self.redo_change != []:
+                data = self.redo_change[-1]
+                undo_data = [data[0], [data[0], self.canvas.coords(data[0]), self.canvas.itemcget(data[0], "fill")]]
+                self.canvas.itemconfig(data[0], fill=data[1][2])
+                self.canvas.coords(data[0], data[1][1][0], data[1][1][1], data[1][1][2], data[1][1][3])
+                self.undo_change.append(undo_data)
+                self.redo_change.pop(-1)
+            else:
+                print("No changes to redo")
