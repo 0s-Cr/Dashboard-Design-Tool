@@ -30,11 +30,12 @@ def dev_screen(loading=bool, filename=str):
 
 
     pw = PanedWindow(orient='horizontal')
-    pw.pack(fill='both', expand=True)
+    pw.pack(fill='both', expand=False)
 
     # Sidebar for icons
     sidebar = Canvas(master, width=150, bg='#CCC', height=500,
                      relief='sunken', borderwidth=2)
+
     mainarea = Canvas(master, bg='grey', width=500, height=500)
 
     # Icon manager

@@ -17,7 +17,6 @@ class DevArea:
         if event.state & 0x4:
             print(self.check_for_shapes())
 
-
     def check_for_shapes(self):
         overlapping_shapes = []
         x1, y1, x2, y2 = self.canvas.coords(self.shape)
@@ -57,20 +56,20 @@ class IconManager:
         if event == "z" or event.keysym.lower() == "z":
             if self.undo_change != []:
                 data = self.undo_change[-1]
-                redo_data = [data[0], [data[0], self.canvas.coords(data[0]), self.canvas.itemcget(data[0], "fill")]]
+                redo_data = [data[0], [data[0], self.canvas.coords(
+                    data[0]), self.canvas.itemcget(data[0], "fill")]]
                 self.canvas.itemconfig(data[0], fill=data[1][2])
-                self.canvas.coords(data[0], data[1][1][0], data[1][1][1], data[1][1][2], data[1][1][3])
+                self.canvas.coords(
+                    data[0], data[1][1][0], data[1][1][1], data[1][1][2], data[1][1][3])
                 self.redo_change.append(redo_data)
                 self.undo_change.pop(-1)
-            else:
-                print("No changes to undo")
         elif event == "y" or event.keysym.lower() == "y":
             if self.redo_change != []:
                 data = self.redo_change[-1]
-                undo_data = [data[0], [data[0], self.canvas.coords(data[0]), self.canvas.itemcget(data[0], "fill")]]
+                undo_data = [data[0], [data[0], self.canvas.coords(
+                    data[0]), self.canvas.itemcget(data[0], "fill")]]
                 self.canvas.itemconfig(data[0], fill=data[1][2])
-                self.canvas.coords(data[0], data[1][1][0], data[1][1][1], data[1][1][2], data[1][1][3])
+                self.canvas.coords(
+                    data[0], data[1][1][0], data[1][1][1], data[1][1][2], data[1][1][3])
                 self.undo_change.append(undo_data)
                 self.redo_change.pop(-1)
-            else:
-                print("No changes to redo")

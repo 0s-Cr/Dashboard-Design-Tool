@@ -142,10 +142,13 @@ class MovableIcon:
     def change_color(self, color):
         self.canvas.itemconfig(self.shape, fill=color)
         self.color = color
-        self.update_shape()
+
+    def change_pos(self, x, y, w, h):
+        self.canvas.coords(self.shape, x, y, x + w, y + h)
 
     def update_shape(self):
         self.manager.add_to_undo(self.id, self.prev_icon)
-        new_icon = [self.type, self.coords, self.canvas.itemcget(self.shape, "fill")]
+        new_icon = [self.type, self.coords,
+                    self.canvas.itemcget(self.shape, "fill")]
         self.prev_icon = new_icon
         self.manager.update_icon(self.id, new_icon)
