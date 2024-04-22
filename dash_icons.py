@@ -100,6 +100,7 @@ class MovableIcon:
         self.resizing = False
         self.selected = False
         self.color = color
+        self.labels = []
         self.prev_icon = [self.type, self.coords, self.color]
         self.id = self.manager.add_icon(
             self.shape, self.prev_icon)
@@ -111,7 +112,7 @@ class MovableIcon:
         if event.state & 0x1:
             self.resizing = True
         elif event.state & 0x4 and self.type != "ERROR":
-            config_window = ConfigWindow(self.canvas.master, self)
+            config_window = ConfigWindow(self.canvas.master, self.canvas, self)
         else:
             self.resizing = False
 
@@ -142,9 +143,11 @@ class MovableIcon:
     def change_color(self, color):
         self.canvas.itemconfig(self.shape, fill=color)
         self.color = color
+        self.update_shape()
 
     def change_pos(self, x, y, w, h):
         self.canvas.coords(self.shape, x, y, x + w, y + h)
+        self.update_shape()
 
     def update_shape(self):
         self.manager.add_to_undo(self.id, self.prev_icon)

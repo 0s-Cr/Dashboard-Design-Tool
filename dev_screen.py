@@ -30,7 +30,7 @@ def dev_screen(loading=bool, filename=str):
 
 
     pw = PanedWindow(orient='horizontal')
-    pw.pack(fill='both', expand=False)
+    pw.pack(fill='both', expand=True)
 
     # Sidebar for icons
     sidebar = Canvas(master, width=150, bg='#CCC', height=500,
@@ -97,6 +97,7 @@ def dev_screen(loading=bool, filename=str):
     # Input detection
     master.bind("<Control-z>", manager.undo_redo)
     master.bind("<Control-y>", manager.undo_redo)
+    master.bind("<Control-l>", manager.toggle_labels)
 
     if loading:
         load_files(loading, filename, manager, mainarea)

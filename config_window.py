@@ -3,7 +3,7 @@ from tkinter import colorchooser
 
 
 class ConfigWindow(tk.Toplevel):
-    def __init__(self, parent, movable_icon):
+    def __init__(self, parent, canvas, movable_icon):
         super().__init__(parent)
         self.window = tk.Toplevel
         self.movable_icon = movable_icon
@@ -29,27 +29,29 @@ class ConfigWindow(tk.Toplevel):
         position_frame = tk.Frame(self)
         position_frame.pack()
 
+        x1, y1, x2, y2 = canvas.coords(self.movable_icon.shape)
+
         tk.Label(position_frame, text="X Coordinate:").grid(row=0, column=0)
         self.x_entry = tk.Entry(position_frame)
-        self.x_entry.insert(0, str(self.movable_icon.coords[0]))
+        self.x_entry.insert(0, str(x1))
         self.x_entry.grid(row=0, column=1)
 
         tk.Label(position_frame, text="Y Coordinate:").grid(row=1, column=0)
         self.y_entry = tk.Entry(position_frame)
-        self.y_entry.insert(0, str(self.movable_icon.coords[1]))
+        self.y_entry.insert(0, str(y1))
         self.y_entry.grid(row=1, column=1)
 
         tk.Label(position_frame, text="Width:").grid(row=2, column=0)
         self.w_entry = tk.Entry(position_frame)
         self.w_entry.insert(
-            0, str(abs(self.movable_icon.coords[0] - self.movable_icon.coords[2])))
+            0, str(abs(x1 - x2)))
         self.w_entry.grid(row=2, column=1)
-        
+
         if self.movable_icon.type not in ["Speed", "RPM", "Fuel Temp", "Voltmeter Gague"]:
             tk.Label(position_frame, text="Height:").grid(row=3, column=0)
             self.h_entry = tk.Entry(position_frame)
             self.h_entry.insert(
-                0, str(abs(self.movable_icon.coords[1] - self.movable_icon.coords[3])))
+                0, str(abs(y1 - y2)))
             self.h_entry.grid(row=3, column=1)
 
         # Apply and cancel buttons
@@ -63,7 +65,6 @@ class ConfigWindow(tk.Toplevel):
         apply_button = tk.Button(
             apply_cancel_frame, text="Apply", command=self.apply_changes)
         apply_button.pack(side=tk.RIGHT)
-
         self.grab_set()
 
     def choose_color(self):
@@ -77,7 +78,6 @@ class ConfigWindow(tk.Toplevel):
             self.w_entry.get())
         if self.movable_icon.type in ["Speed", "RPM", "Fuel Temp", "Voltmeter Gague"]:
             h = w
-        else: 
-            float(self.h_entry.get())
+        else:
+            h = float(self.h_entry.get())
         self.movable_icon.change_pos(x, y, w, h)
-        self.movable_icon.update_shape()

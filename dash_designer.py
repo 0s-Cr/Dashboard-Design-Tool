@@ -21,7 +21,7 @@ def open_project():
         dev_screen(True, filename)
 
 
-title_label = Label(master, text="Dashboard Designer", height= 4, font=("Helvetica", 32, "bold italic"), fg="#1f2a44")
+title_label = Label(master, text="Dashboard Designer", height=4, font=("Helvetica", 32, "bold italic"), fg="#1f2a44")
 image = tk.PhotoImage(file="images/york_words.png").subsample(3)
 image_label = Label(master, image=image)
 image_label.pack()
