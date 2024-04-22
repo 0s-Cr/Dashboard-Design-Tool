@@ -35,7 +35,7 @@ def save_dash(save_as, filename, dev_area):
     return filename
 
 
-def load_files(loading, filename, manager, canvas):
+def load_files(loading, dev, filename, manager, canvas):
     if not loading:
         filename = open_files()
     try:
@@ -47,11 +47,13 @@ def load_files(loading, filename, manager, canvas):
                 if len(i[1]) == 3:
                     width = abs(i[1][1][0] - i[1][1][2])
                     height = abs(i[1][1][1] - i[1][1][3])
-                    icon = MovableIcon(
-                        manager, canvas, i[1][0], i[1][1][0], i[1][1][1], width, height, i[1][2])
+                    if dev:
+                        icon = MovableIcon(
+                            manager, canvas, i[1][0], i[1][1][0], i[1][1][1], width, height, i[1][2])
                 else:
-                    icon = MovableIcon(
-                        manager, canvas, i[1][0], i[1][1][0], i[1][1][1], i[1][2][0], i[1][2][1], i[1][3])
+                    if dev:
+                        icon = MovableIcon(
+                            manager, canvas, i[1][0], i[1][1][0], i[1][1][1], i[1][2][0], i[1][2][1], i[1][3])
         else:
             print("Error loading")
         f.close()

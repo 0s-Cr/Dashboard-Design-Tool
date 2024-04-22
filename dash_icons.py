@@ -43,14 +43,14 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
         case "Volt Circle":
             shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
             if has_label:
-                label_text = "Voltmeter Gague"
+                label_text = "Voltmeter"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
-        case "Volt Linear":
+        case "Volt Digital":
             shape = canvas.create_rectangle(
                 x, y, x + width, y + height/2, fill=color)
             if has_label:
-                label_text = "Linear Voltmeter"
+                label_text = "Digital Voltmeter"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case _:

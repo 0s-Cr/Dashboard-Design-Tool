@@ -1,6 +1,6 @@
 from tkinter import *
+
 from dev_screen import *
-from dev_utils import *
 
 master = Tk()
 master.title("Dashboard Designer")
@@ -20,6 +20,9 @@ def open_project():
         master.destroy()
         dev_screen(True, filename)
 
+
+def skip_to_dev(filename):
+    dev_screen(True, filename)
 
 title_label = Label(master, text="Dashboard Designer", height=4, font=(
     "Helvetica", 32, "bold italic"), fg="#1f2a44")

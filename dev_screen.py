@@ -3,6 +3,8 @@ from tkinter import *
 from dash_icons import *
 from dev_utils import *
 from file_managment import *
+from icon_manager import *
+from dash_sim import *
 
 global filename
 
@@ -11,12 +13,13 @@ def update_title_save(master, dev_area):
     filename = save_dash(True, None, dev_area)
     master.title("Dashboard Designer - " + filename)
 
-
 def open_devscreen(master, manager, canvas):
-    filename = load_files(False, None, manager, canvas)
+    filename = load_files(False, True, None, manager, canvas)
     master.destroy()
     dev_screen(True, filename)
 
+def go_to_sim(master, filename, manager, dev_area):
+    sim_screen(filename, manager, dev_area.get_coords())
 
 def new_project(master):
     master.destroy()
@@ -58,6 +61,8 @@ def dev_screen(loading=bool, filename=str):
     file_menu.add_command(label="Save As...",
                           command=lambda: update_title_save(master, dev_area))
     file_menu.add_separator()
+    file_menu.add_command(label="Simulate", command=lambda: go_to_sim(master, filename, manager, dev_area, mainarea))
+    file_menu.add_separator()
     file_menu.add_command(label="Exit", command=quit)
     menubar.add_cascade(label="File", menu=file_menu)
     # Edit menu
@@ -77,7 +82,7 @@ def dev_screen(loading=bool, filename=str):
     - Fuel
     - Temp
     - Volt Circle
-    - Volt Linear
+    - Volt Digital
     Any other entry will result in an ERROR figure (red circle which spawns a red square)'''
     sidebar_icons_list = [
         SidebarIcon(manager, sidebar, mainarea, "Speed", 10, 10),
@@ -86,7 +91,7 @@ def dev_screen(loading=bool, filename=str):
         SidebarIcon(manager, sidebar, mainarea, "Fuel", 90, 120),
         SidebarIcon(manager, sidebar, mainarea, "Temp", 10, 240),
         SidebarIcon(manager, sidebar, mainarea, "Volt Circle", 90, 240),
-        SidebarIcon(manager, sidebar, mainarea, "Volt Linear", 10, 360)
+        SidebarIcon(manager, sidebar, mainarea, "Volt Digital", 10, 360)
     ]
     pw.add(sidebar)
 
@@ -99,7 +104,7 @@ def dev_screen(loading=bool, filename=str):
     master.bind("<Control-l>", manager.toggle_labels)
 
     if loading:
-        load_files(loading, filename, manager, mainarea)
+        load_files(loading, True, filename, manager, mainarea)
 
     master.mainloop()
 
