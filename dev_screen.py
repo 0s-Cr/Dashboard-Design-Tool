@@ -28,7 +28,6 @@ def dev_screen(loading=bool, filename=str):
     master.title("Dashboard Designer - " + filename)
     master.after(0, lambda: master.state('zoomed'))
 
-
     pw = PanedWindow(orient='horizontal')
     pw.pack(fill='both', expand=True)
 

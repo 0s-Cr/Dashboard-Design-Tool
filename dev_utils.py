@@ -48,7 +48,6 @@ class IconManager:
     def add_to_undo(self, id, icon):
         self.undo_change.append([id, icon])
 
-
     def toggle_labels(self, event):
         if not self.show_labels:
             for i in self.icon_list:
@@ -57,7 +56,8 @@ class IconManager:
                 print(x_centre)
                 y_centre = (i[1][1][1] + i[1][1][3]) / 2
                 print(y_centre)
-                label = self.canvas.create_text(x_centre, y_centre, text=i[1][0])
+                label = self.canvas.create_text(
+                    x_centre, y_centre, text=i[1][0])
                 self.label_list.append(label)
                 self.show_labels = not self.show_labels
         else:
