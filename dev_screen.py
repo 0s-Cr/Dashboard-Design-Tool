@@ -2,7 +2,7 @@ from tkinter import *
 
 from dash_icons import *
 from dev_utils import *
-from file_managment import *
+from file_management import *
 from icon_manager import *
 from dash_sim import *
 

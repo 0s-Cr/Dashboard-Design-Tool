@@ -1,6 +1,6 @@
 from tkinter import *
 from dev_screen import *
-from file_managment import *
+from file_management import *
 
 
 def sim_screen(filename, manager, dev_coords):
