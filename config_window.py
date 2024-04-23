@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import colorchooser
 
 
@@ -93,23 +94,33 @@ class SimConfigWindow(tk.Toplevel):
         self.geometry("300x200")
 
         # Entry for config options
-        position_frame = tk.Frame(self)
-        position_frame.pack()
+        sim_entry_frame = tk.Frame(self)
+        sim_entry_frame.pack()
 
-        tk.Label(position_frame, text="Maximum Value:").grid(row=0, column=0)
-        self.max_entry = tk.Entry(position_frame)
+        tk.Label(sim_entry_frame, text="Maximum Value:").grid(row=0, column=0)
+        self.max_entry = tk.Entry(sim_entry_frame)
         self.max_entry.insert(0, str(sim_icon.max_value))
         self.max_entry.grid(row=0, column=1)
 
-        tk.Label(position_frame, text="Minimum Value:").grid(row=1, column=0)
-        self.min_entry = tk.Entry(position_frame)
+        tk.Label(sim_entry_frame, text="Minimum Value:").grid(row=1, column=0)
+        self.min_entry = tk.Entry(sim_entry_frame)
         self.min_entry.insert(0, str(sim_icon.min_value))
         self.min_entry.grid(row=1, column=1)
 
-        tk.Label(position_frame, text="Increment:").grid(row=2, column=0)
-        self.inc_entry = tk.Entry(position_frame)
+        tk.Label(sim_entry_frame, text="Increment:").grid(row=2, column=0)
+        self.inc_entry = tk.Entry(sim_entry_frame)
         self.inc_entry.insert(0, str(sim_icon.increment))
         self.inc_entry.grid(row=2, column=1)
+
+        packed_selections = tk.Frame(self)
+        packed_selections.pack()
+
+        match self.type:
+            case "Speed":
+                self.unit_select = ttk.Combobox(
+                    packed_selections, values=["MPH", "Km/h"])
+                self.unit_select.set(self.sim_icon.add_text)
+                self.unit_select.pack()
 
         # Apply and cancel buttons
         apply_cancel_frame = tk.Frame(self)
@@ -125,5 +136,7 @@ class SimConfigWindow(tk.Toplevel):
         self.grab_set()
 
     def apply_changes(self):
+        if hasattr(self, "unit_select"):
+            self.sim_icon.add_text = self.unit_select.get()
         self.sim_icon.update_labels(int(self.min_entry.get()), int(
             self.max_entry.get()), int(self.inc_entry.get()))

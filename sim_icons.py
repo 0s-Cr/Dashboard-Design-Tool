@@ -42,6 +42,17 @@ class Dial():
         self.needle = None
         self.increment = increment
         self.labels = []
+        match self.type:
+            case "Speed":
+                self.add_text = "MPH"
+            case "RPM":
+                self.add_text = "x1000 RPM"
+            case "Fuel Dial":
+                self.add_text = "Fuel %"
+            case "Volt Circle":
+                self.add_text = "Volts"
+            case _:
+                self.add_text = ""
         self.create_dial()
         self.update_needle(60)
 
@@ -65,19 +76,9 @@ class Dial():
                 x, y, text=str(number), fill="black")
             self.labels.append(label)
             number += self.increment
-        match self.type:
-            case "Speed":
-                add_text = "MPH"
-            case "RPM":
-                add_text = "x1000 RPM"
-            case "Fuel Dial":
-                add_text = "Fuel %"
-            case "Volt Circle":
-                add_text = "Volts"
-            case _:
-                add_text = ""
-        self.canvas.create_text(
-            self.center[0], self.center[1] - self.radius * 0.925 * math.sin(radian), text=add_text, fill="black")
+        label = self.canvas.create_text(
+            self.center[0], self.center[1] - self.radius * 0.925 * math.sin(radian), text=self.add_text, fill="black")
+        self.labels.append(label)
 
     def update_needle(self, target_val):
         if self.needle:
@@ -111,6 +112,9 @@ class Dial():
                 x, y, text=str(number), fill="black")
             self.labels.append(label)
             number += self.increment
+        label = self.canvas.create_text(
+            self.center[0], self.center[1] - self.radius * 0.925 * math.sin(radian), text=self.add_text, fill="black")
+        self.labels.append(label)
 
     def on_press(self, event):
         # Actions when clicked with certain modifiers

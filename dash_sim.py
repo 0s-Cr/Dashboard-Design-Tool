@@ -26,12 +26,12 @@ def sim_screen(filename, manager, dev_coords):
     menubar = Menu(master)
     # File menu
     file_menu = Menu(menubar, tearoff=0)
-    file_menu.add_command(label="Rrturn", command=master.destroy)
+    file_menu.add_command(label="Return", command=master.destroy)
     menubar.add_cascade(label="File", menu=file_menu)
-    # Edit menu
-    edit_menu = Menu(menubar, tearoff=0)
+    # Simulation menu
+    sim_menu = Menu(menubar, tearoff=0)
     master.config(menu=menubar)
-    menubar.add_cascade(label="Simulation", menu=edit_menu)
+    menubar.add_cascade(label="Simulation", menu=sim_menu)
 
     # Sidebar
     sidebar.pack(expand=False, fill='both', side='left', anchor='nw')
