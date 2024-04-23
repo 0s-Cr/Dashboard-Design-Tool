@@ -2,7 +2,7 @@ from tkinter import filedialog
 import os
 import ast
 from dash_icons import *
-
+from sim_icons import *
 
 def create_files():
     filename = filedialog.asksaveasfilename(initialdir=os.path.dirname(os.path.realpath(__file__)),
@@ -50,11 +50,17 @@ def load_files(loading, dev, filename, manager, canvas):
                     if dev:
                         icon = MovableIcon(
                             manager, canvas, i[1][0], i[1][1][0], i[1][1][1], width, height, i[1][2])
+                    else:
+                        icon = SimIcon(
+                            manager, canvas, i[1][0], i[1][1][0], i[1][1][1], width, height)
                 else:
                     if dev:
                         icon = MovableIcon(
                             manager, canvas, i[1][0], i[1][1][0], i[1][1][1], i[1][2][0], i[1][2][1], i[1][3])
-        else:
+                    else:
+                        icon = SimIcon(
+                            manager, canvas, i[1][0], i[1][1][0], i[1][1][1], i[1][2][0], i[1][2][1])
+        else:          
             print("Error loading")
         f.close()
         return filename

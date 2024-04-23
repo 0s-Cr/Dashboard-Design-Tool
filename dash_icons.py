@@ -20,10 +20,10 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
                 label_text = "Tachometer"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
-        case "Fuel Temp":
+        case "Fuel Dial":
             shape = canvas.create_oval(x, y, x + width, y + height, fill=color)
             if has_label:
-                label_text = "Fuel and Temperature"
+                label_text = "Fuel Dial"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Fuel":
@@ -112,7 +112,8 @@ class MovableIcon:
         if event.state & 0x1:
             self.resizing = True
         elif event.state & 0x4 and self.type != "ERROR":
-            config_window = ConfigWindow(self.canvas.master, self.canvas, self)
+            config_window = DevConfigWindow(
+                self.canvas.master, self.canvas, self)
         else:
             self.resizing = False
 
@@ -120,7 +121,7 @@ class MovableIcon:
         # Actions when dragged
         if self.resizing:
             width = event.x - self.canvas.coords(self.shape)[0]
-            if self.type in ["Speed", "RPM", "Fuel Temp", "Voltmeter Gague"]:
+            if self.type in ["Speed", "RPM", "Fuel Dial", "Volt Circle"]:
                 height = width
             else:
                 height = event.y - self.canvas.coords(self.shape)[1]

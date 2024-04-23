@@ -1,7 +1,9 @@
 from tkinter import *
 from dev_screen import *
+from file_managment import *
 
-def sim_screen(filename, dev_coords):
+
+def sim_screen(filename, manager, dev_coords):
     master = Tk()
     master.title("Dashboard Simulator - " + filename)
     master.after(0, lambda: master.state('zoomed'))
@@ -38,5 +40,7 @@ def sim_screen(filename, dev_coords):
 
     mainarea.pack(expand=True, fill='both', side='right')
     pw.add(mainarea)
+
+    load_files(True, False, filename, manager, mainarea)
 
     master.mainloop()
