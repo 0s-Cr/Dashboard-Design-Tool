@@ -30,14 +30,14 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
             shape = canvas.create_rectangle(
                 x, y, x + width, y + height/2, fill=color)
             if has_label:
-                label_text = "Fuel Gague"
+                label_text = "Fuel Display"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Temp":
             shape = canvas.create_rectangle(
                 x, y, x + width, y + height/2, fill=color)
             if has_label:
-                label_text = "Temperature Gague"
+                label_text = "Temperature Display"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Volt Circle":
@@ -51,6 +51,13 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
                 x, y, x + width, y + height/2, fill=color)
             if has_label:
                 label_text = "Digital Voltmeter"
+                label = canvas.create_text(
+                    x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
+        case "Gen Display":
+            shape = canvas.create_rectangle(
+                x, y, x + width, y + height/2, fill=color)
+            if has_label:
+                label_text = "General Display"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case _:

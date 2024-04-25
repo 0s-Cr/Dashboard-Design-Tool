@@ -48,7 +48,7 @@ class DevConfigWindow(tk.Toplevel):
             0, str(abs(x1 - x2)))
         self.w_entry.grid(row=2, column=1)
 
-        if self.movable_icon.type not in ["Speed", "RPM", "Fuel Temp", "Voltmeter Gague"]:
+        if self.movable_icon.type not in ["Speed", "RPM", "Fuel Temp", "Volt Circle"]:
             tk.Label(position_frame, text="Height:").grid(row=3, column=0)
             self.h_entry = tk.Entry(position_frame)
             self.h_entry.insert(
@@ -77,7 +77,7 @@ class DevConfigWindow(tk.Toplevel):
             self.movable_icon.change_color(self.color[1])
         x, y, w, = float(self.x_entry.get()), float(self.y_entry.get()), float(
             self.w_entry.get())
-        if self.movable_icon.type in ["Speed", "RPM", "Fuel Temp", "Voltmeter Gague"]:
+        if self.movable_icon.type in ["Speed", "RPM", "Fuel Temp", "Volt Circle"]:
             h = w
         else:
             h = float(self.h_entry.get())

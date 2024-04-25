@@ -14,7 +14,7 @@ def get_default_values(type):
         case "Volt Circle":
             return [570, 690, 10, "Dial"]
         case _:
-            return [0, 240, 20, "Dial"]
+            return [0, 0, 0, "Logger"]
 
 
 class SimIcon:
@@ -23,8 +23,13 @@ class SimIcon:
         self.canvas = canvas
         self.type = type
         min_value, max_value, increment, shape = get_default_values(self.type)
-        self.shape = Dial(self.canvas, self.type, min_value,
-                          max_value, x, y, width, height, increment).shape
+        match shape:
+            case "Dial":
+                self.shape = Dial(self.canvas, self.type, min_value,
+                                  max_value, x, y, width, height, increment).shape
+            case "Logger":
+                self.shape = DigitalDisplay(
+                    self.canvas, self.type, x, y, width, height)
 
 
 class Dial():
@@ -121,6 +126,28 @@ class Dial():
         if event.state & 0x4 and self.type != "ERROR":
             config_window = SimConfigWindow(
                 self.canvas.master, self.canvas, self)
+
+
+class DigitalDisplay():
+    def __init__(self, canvas, type, x, y, width, height):
+        self.canvas = canvas
+        self.type = type
+        self.x1 = x
+        self.y1 = y
+        self.x2 = width + x
+        self.y2 = height + y
+        self.d_x1, self.d_y1, self.d_x2, self.d_y2 = self.x1 + \
+            6, self.y1 + 6, self.x2 - 6, self.y2 - 6
+        self.create_display()
+
+    def create_display(self):
+        # Background
+        self.canvas.create_rectangle(
+            self.x1, self.y1, self.x2, self.y2, fill='grey')
+
+        # Display
+        self.canvas.create_rectangle(
+            self.d_x1, self.d_y1, self.d_x2, self.d_y2, fill='black')
 
 
 if __name__ == "__main__":

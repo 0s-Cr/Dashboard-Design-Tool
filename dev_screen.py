@@ -12,6 +12,8 @@ global filename
 def update_title_save(master, dev_area):
     filename = save_dash(True, None, dev_area)
     master.title("Dashboard Designer - " + filename)
+    master.destroy()
+    dev_screen(True, filename)
 
 
 def open_devscreen(master, manager, canvas):
@@ -87,6 +89,7 @@ def dev_screen(loading=bool, filename=str):
     - Temp
     - Volt Circle
     - Volt Digital
+    - Gen Display
     Any other entry will result in an ERROR figure (red circle which spawns a red square)'''
     sidebar_icons_list = [
         SidebarIcon(manager, sidebar, mainarea, "Speed", 10, 10),
@@ -95,7 +98,8 @@ def dev_screen(loading=bool, filename=str):
         SidebarIcon(manager, sidebar, mainarea, "Temp", 90, 120),
         SidebarIcon(manager, sidebar, mainarea, "Volt Circle", 10, 240),
         SidebarIcon(manager, sidebar, mainarea, "Volt Digital", 90, 240),
-        SidebarIcon(manager, sidebar, mainarea, "Fuel Dial", 10, 360)
+        SidebarIcon(manager, sidebar, mainarea, "Fuel Dial", 10, 360),
+        SidebarIcon(manager, sidebar, mainarea, "Gen Display", 90, 360)
     ]
     pw.add(sidebar)
 
