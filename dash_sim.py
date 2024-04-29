@@ -8,7 +8,6 @@ def on_exit(sim_manager, master):
     sim_manager.on_exit()
     master.destroy()
 
-
 def sim_screen(filename, dev_coords):
     master = Tk()
     master.title("Dashboard Simulator - " + filename)
@@ -33,6 +32,22 @@ def sim_screen(filename, dev_coords):
 
     manager = SimManager(mainarea)
     manager.create_selections(selection_frame)
+
+    Label(sidebar, text="Speed Percentage").pack()
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(0, value))
+    slider.pack()
+
+    Label(sidebar, text="RPM Percentage").pack()
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(1, value))
+    slider.pack()
+
+    Label(sidebar, text="Fuel Percentage").pack()
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(2, value))
+    slider.pack()
+
+    Label(sidebar, text="Voltage Percentage").pack()
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(3, value))
+    slider.pack()
 
     # Menu bar
     menubar = Menu(master)

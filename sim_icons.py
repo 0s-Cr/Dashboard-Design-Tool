@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import font
 import can
 
 from config_window import *
@@ -31,7 +32,7 @@ class SimIcon:
             self.type)
         match shape:
             case "Dial":
-                self.shape = Dial(self.canvas, self.type, min_value,
+                self.shape = Dial(self.manager, self.canvas, self.type, min_value,
                                   max_value, x, y, width, height, increment, channel)
             case "Logger":
                 self.shape = DigitalDisplay(
@@ -40,15 +41,25 @@ class SimIcon:
 
     def kill_all(self):
         if hasattr(self.shape, "display_thread"):
+            self.shape.kill_thread = True
             if self.shape.display_thread != None:
                 self.shape.display_thread.join(5.0)
 
 
 class Dial():
-    def __init__(self, canvas, type, min_value, max_value, x, y, width, height, increment, channel):
+    def __init__(self, manager, canvas, type, min_value, max_value, x, y, width, height, increment, channel):
+        self.manager = manager
         self.canvas = canvas
         self.shape = None
-        self.channel = channel
+        match channel:
+            case "Speed":
+                self.channel = 0
+            case "RPM":
+                self.channel = 1
+            case "Fuel":
+                self.channel = 2
+            case "Voltage":
+                self.channel = 3
         self.width = width
         self.height = height
         self.type = type
@@ -98,20 +109,33 @@ class Dial():
             self.center[0], self.center[1] - self.radius * 0.925 * math.sin(radian), text=self.add_text, fill="black")
         self.labels.append(label)
 
-    def update_needle(self, target_val):
+    def update_needle(self, target_percentage):
         if self.needle:
-            self.delete(self.needle)
-        if target_val == 0:
+            self.canvas.delete(self.needle)
+        if target_percentage == 0:
             angle = self.start_angle
         else:
-            target_pos = target_val / self.max_value
-            angle = self.start_angle - target_pos * 240
+            angle = self.start_angle - (target_percentage/100) * 240
         radian = math.radians(angle)
         x = self.center[0] + self.radius * 0.85 * math.cos(radian)
         y = self.center[1] - self.radius * 0.85 * math.sin(radian)
         self.needle = self.canvas.create_line(
             self.center[0], self.center[1], x, y, fill="red", width=2
         )
+        if self.channel == 3:
+            self.manager.voltage_fault.set("Off")
+            self.manager.voltage_warning.set("Off")
+            self.manager.power_fault.set("Off")
+            self.manager.power_warning.set("Off")
+            if target_percentage <= 20:
+                self.manager.power_warning.set("On")
+                if target_percentage <= 3:
+                    self.manager.power_fault.set("On")
+            elif target_percentage > 75:
+                self.manager.voltage_warning.set("On")
+                if target_percentage > 85:
+                    self.manager.voltage_fault.set("On")
+            self.manager.on_combobox_selected(event=None)
 
     def update_labels(self, min_value, max_value, increment):
         self.min_value, self.max_value, self.increment = min_value, max_value, increment
@@ -149,6 +173,7 @@ class DigitalDisplay():
         self.display_thread = None
         self.shape = None
         self.display = None
+        self.data_text = None
         self.canvas = canvas
         self.type = type
         self.x1 = x
@@ -159,6 +184,7 @@ class DigitalDisplay():
             6, self.y1 + 6, self.x2 - 6, self.y2 - 6
         self.create_display()
         if hasattr(self, "bus"):
+            self.kill_thread = False
             self.display_thread = threading.Thread(target=self.update_display)
             self.display_thread.start()
 
@@ -167,19 +193,73 @@ class DigitalDisplay():
         self.shape = self.canvas.create_rectangle(
             self.x1, self.y1, self.x2, self.y2, fill='grey')
 
-        self.canvas.tag_bind(self.shape, "<Button-1>", self.on_press)
-
         # Display
-        self.display = self.canvas.create_rectangle(
-            self.d_x1, self.d_y1, self.d_x2, self.d_y2, fill='black')
+        self.data_text = Text(self.canvas, background="black")
+        self.data_text.place(x=self.d_x1, y=self.d_y1, width=int(
+            self.d_x2 - self.d_x1), height=int(self.d_y2 - self.d_y1))
 
     def update_display(self):
         if hasattr(self, "bus"):
-            with can.interface.Bus(channel=0, interface="virtual") as bus:
-                print("Ready to read")
-                for msg in bus:
-                    print(msg)
-                    return
+            while not self.kill_thread:
+                with can.interface.Bus(channel=0, interface="virtual") as bus:
+                    for msg in bus:
+                        self.data_text.delete(1.0, END)
+                        if self.kill_thread:
+                            break
+                        font_size = font.Font(font=self.data_text["font"])
+                        max_display = int(
+                            (self.d_y2 - self.d_y1) / (font_size.actual()["size"]) / (4/3)) - 1
+                        for i in range(0, min(max_display, len(list(msg.data)))):
+                            data = list(msg.data)
+                            if data[i] < 16 or data[i] == 0xFF:
+                                self.data_text.insert(
+                                    END, hex(data[i]) + " " + self.match_hex(data[i]), "red")
+                                self.data_text.insert(END, '\n')
+                            else:
+                                self.data_text.insert(
+                                    END, hex(data[i]) + " " + self.match_hex(data[i]), "orange")
+                                self.data_text.insert(END, '\n')
+                            self.data_text.tag_configure(
+                                "red", foreground="red")
+                            self.data_text.tag_configure(
+                                "orange", foreground="orange")
+                        print(msg)
+                    bus.shutdown()
+
+    def match_hex(self, code):
+        match code:
+            case 0x00:
+                return "BADPARAS"
+            case 0x01:
+                return "POWER FAULT"
+            case 0x02:
+                return "RFE FAULT"
+            case 0x03:
+                return "BUS TIMEOUT"
+            case 0x04:
+                return "FEEDBACK"
+            case 0x05 | 0x15:
+                return "POWERVOLTAGE"
+            case 0x06 | 0x16:
+                return "MOTORTEMP"
+            case 0x07 | 0x17:
+                return "DEVICETEMP"
+            case 0x08 | 0x18:
+                return "OVERVOLTAGE"
+            case 0x09 | 0x18:
+                return "I_PEAK"
+            case 0x0A | 0x19:
+                return "RACEAWAY"
+            case 0x0B:
+                return "USER"
+            case 0x0E:
+                return "CPU-ERROR"
+            case 0x0F:
+                return "BALLAST"
+            case 0x1C:
+                return "I2R"
+            case _:
+                return "UNSPECIFIED ERROR"
 
 
 if __name__ == "__main__":
