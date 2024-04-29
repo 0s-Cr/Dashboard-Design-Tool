@@ -1,6 +1,7 @@
-import can
 from tkinter import *
 from tkinter import ttk
+
+import can
 
 
 class SimManager:
@@ -193,9 +194,6 @@ class SimManager:
         ]
         for combobox in self.all_comboboxes:
             combobox.bind("<<ComboboxSelected>>", self.on_combobox_selected)
-
-        
-
 
     def on_combobox_selected(self, event):
         # detect when a combobox has had a value change and sent message over CAN

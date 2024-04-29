@@ -1,10 +1,11 @@
+import math
+import threading
 from tkinter import *
 from tkinter import font
+
 import can
 
 from config_window import *
-import math
-import threading
 
 
 def get_default_values(type):
@@ -95,7 +96,7 @@ class Dial():
             fill="light grey")
         self.canvas.tag_bind(self.shape, "<Button-1>", self.on_press)
         step = int(
-            round(240 / ((self.max_value-self.min_value) / self.increment)))
+            round(240 / ((self.max_value - self.min_value) / self.increment)))
         number = self.min_value
         for angle in range(self.start_angle, self.start_angle - 241, -step):
             radian = math.radians(angle)
@@ -115,7 +116,7 @@ class Dial():
         if target_percentage == 0:
             angle = self.start_angle
         else:
-            angle = self.start_angle - (target_percentage/100) * 240
+            angle = self.start_angle - (target_percentage / 100) * 240
         radian = math.radians(angle)
         x = self.center[0] + self.radius * 0.85 * math.cos(radian)
         y = self.center[1] - self.radius * 0.85 * math.sin(radian)
@@ -144,7 +145,7 @@ class Dial():
                 self.canvas.delete(label)
             self.labels.clear()
         step = int(
-            round(240 / ((self.max_value-self.min_value) / self.increment)))
+            round(240 / ((self.max_value - self.min_value) / self.increment)))
         number = self.min_value
         for angle in range(self.start_angle, self.start_angle - 241, -step):
             radian = math.radians(angle)
@@ -181,7 +182,7 @@ class DigitalDisplay():
         self.x2 = width + x
         self.y2 = height + y
         self.d_x1, self.d_y1, self.d_x2, self.d_y2 = self.x1 + \
-            6, self.y1 + 6, self.x2 - 6, self.y2 - 6
+                                                     6, self.y1 + 6, self.x2 - 6, self.y2 - 6
         self.create_display()
         if hasattr(self, "bus"):
             self.kill_thread = False
@@ -208,7 +209,7 @@ class DigitalDisplay():
                             break
                         font_size = font.Font(font=self.data_text["font"])
                         max_display = int(
-                            (self.d_y2 - self.d_y1) / (font_size.actual()["size"]) / (4/3)) - 1
+                            (self.d_y2 - self.d_y1) / (font_size.actual()["size"]) / (4 / 3)) - 1
                         for i in range(0, min(max_display, len(list(msg.data)))):
                             data = list(msg.data)
                             if data[i] < 16 or data[i] == 0xFF:

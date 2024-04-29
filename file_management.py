@@ -1,6 +1,7 @@
-from tkinter import filedialog
-import os
 import ast
+import os
+from tkinter import filedialog
+
 from dash_icons import *
 from sim_icons import *
 
