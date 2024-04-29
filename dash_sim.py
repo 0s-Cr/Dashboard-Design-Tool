@@ -1,3 +1,4 @@
+from tkinter import *
 from dev_screen import *
 from file_management import *
 from sim_manager import *
@@ -6,7 +7,6 @@ from sim_manager import *
 def on_exit(sim_manager, master):
     sim_manager.on_exit()
     master.destroy()
-
 
 def sim_screen(filename, dev_coords):
     master = Tk()
@@ -34,23 +34,19 @@ def sim_screen(filename, dev_coords):
     manager.create_selections(selection_frame)
 
     Label(sidebar, text="Speed Percentage").pack()
-    slider = Scale(sidebar, length=150, from_=0, to=100, orient=HORIZONTAL,
-                   command=lambda value: manager.update_dials(0, value))
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(0, value))
     slider.pack()
 
     Label(sidebar, text="RPM Percentage").pack()
-    slider = Scale(sidebar, length=150, from_=0, to=100, orient=HORIZONTAL,
-                   command=lambda value: manager.update_dials(1, value))
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(1, value))
     slider.pack()
 
     Label(sidebar, text="Fuel Percentage").pack()
-    slider = Scale(sidebar, length=150, from_=0, to=100, orient=HORIZONTAL,
-                   command=lambda value: manager.update_dials(2, value))
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(2, value))
     slider.pack()
 
     Label(sidebar, text="Voltage Percentage").pack()
-    slider = Scale(sidebar, length=150, from_=0, to=100, orient=HORIZONTAL,
-                   command=lambda value: manager.update_dials(3, value))
+    slider = Scale(sidebar, length=150,from_=0, to=100, orient=HORIZONTAL, command=lambda value: manager.update_dials(3, value))
     slider.pack()
 
     # Menu bar

@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import colorchooser
 from config_window import *
 
 
@@ -26,14 +28,14 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Fuel":
             shape = canvas.create_rectangle(
-                x, y, x + width, y + height / 2, fill=color)
+                x, y, x + width, y + height/2, fill=color)
             if has_label:
                 label_text = "Fuel Display"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Temp":
             shape = canvas.create_rectangle(
-                x, y, x + width, y + height / 2, fill=color)
+                x, y, x + width, y + height/2, fill=color)
             if has_label:
                 label_text = "Temperature Display"
                 label = canvas.create_text(
@@ -46,14 +48,14 @@ def get_shape_from_type(canvas, type, has_label, x, y, width, height, color):
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Volt Digital":
             shape = canvas.create_rectangle(
-                x, y, x + width, y + height / 2, fill=color)
+                x, y, x + width, y + height/2, fill=color)
             if has_label:
                 label_text = "Digital Voltmeter"
                 label = canvas.create_text(
                     x + width / 2, y + height + 10, text=label_text, width=80, anchor="center")
         case "Gen Display":
             shape = canvas.create_rectangle(
-                x, y, x + width, y + height / 2, fill=color)
+                x, y, x + width, y + height/2, fill=color)
             if has_label:
                 label_text = "General Display"
                 label = canvas.create_text(

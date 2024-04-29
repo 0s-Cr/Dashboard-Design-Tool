@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import colorchooser
 from tkinter import ttk
+from tkinter import colorchooser
 
 
 class DevConfigWindow(tk.Toplevel):

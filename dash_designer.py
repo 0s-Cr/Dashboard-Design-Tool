@@ -1,3 +1,5 @@
+from tkinter import *
+
 from dev_screen import *
 
 master = Tk()

@@ -1,9 +1,8 @@
-import math
 import tkinter as tk
-
+import math
 
 class Speedometer():
-    def __init__(self, master, start_angle, max_speed, increment=10, **kwargs):
+    def __init__(self, master, start_angle, max_speed, increment = 10, **kwargs):
         super().__init__(master, **kwargs)
         self.master = master
         self.width = kwargs.get("width", 200)
@@ -23,13 +22,13 @@ class Speedometer():
             self.center[0] + self.radius,
             self.center[1] + self.radius,
             outline="black", width=2,
-            fill="light grey"
+            fill = "light grey"
         )
         step = int(round(240 / (self.max_speed / 10)))
         number = 0
         for angle in range(self.start_angle, self.start_angle - 241, -step):
             radian = math.radians(angle)
-            angle_from_start = -1 * (angle - 210)
+            angle_from_start = -1*(angle - 210)
             x = self.center[0] + self.radius * 0.925 * math.cos(radian)
             y = self.center[1] - self.radius * 0.925 * math.sin(radian)
             self.create_text(x, y, text=str(number), fill="black")
@@ -45,17 +44,16 @@ class Speedometer():
             angle = self.start_angle - target_pos * 240
         radian = math.radians(angle)
         x = self.center[0] + self.radius * 0.85 * math.cos(radian)
-        y = self.center[1] - self.radius * 0.85 * math.sin(radian)
+        y = self.center[1] - self.radius * 0.85 *  math.sin(radian)
         self.needle = self.create_line(
             self.center[0], self.center[1], x, y, fill="red", width=2
         )
 
-
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Car Speedometer")
-
-    canvas = tk.Canvas(root, width=300, height=300)
+    
+    canvas = tk.Canvas(root, width = 300, height = 300)
 
     speedometer = Speedometer(root, width=300, height=300)
     speedometer.pack()
@@ -63,11 +61,9 @@ if __name__ == "__main__":
     speed_label = tk.Label(root, text="Speed: 0 mph")
     speed_label.pack()
 
-
     def update_speedometer(speed):
         speedometer.update_speed(speed)
         speed_label.config(text=f"Speed: {speed} mph")
-
 
     # Example usage: Update the speedometer speed
     update_speedometer(60)
