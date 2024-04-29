@@ -1,20 +1,25 @@
 from tkinter import *
+import can
+
 from config_window import *
 import math
+import threading
 
 
 def get_default_values(type):
     match type:
         case "Speed":
-            return [0, 160, 10, "Dial"]
+            return [0, 160, 10, "Dial", "Speed"]
         case "RPM":
-            return [0, 8, 1, "Dial"]
+            return [0, 8, 1, "Dial", "RPM"]
         case "Fuel Dial":
-            return [0, 100, 25, "Dial"]
+            return [0, 100, 25, "Dial", "Fuel"]
         case "Volt Circle":
-            return [570, 690, 10, "Dial"]
+            return [570, 690, 10, "Dial", "Voltage"]
+        case "Gen Display":
+            return [0, 0, 0, "Logger", "CAN_output"]
         case _:
-            return [0, 0, 0, "Logger"]
+            return [0, 0, 0, "Logger", None]
 
 
 class SimIcon:
@@ -22,20 +27,28 @@ class SimIcon:
         self.manager = manager
         self.canvas = canvas
         self.type = type
-        min_value, max_value, increment, shape = get_default_values(self.type)
+        min_value, max_value, increment, shape, channel = get_default_values(
+            self.type)
         match shape:
             case "Dial":
                 self.shape = Dial(self.canvas, self.type, min_value,
-                                  max_value, x, y, width, height, increment).shape
+                                  max_value, x, y, width, height, increment, channel)
             case "Logger":
                 self.shape = DigitalDisplay(
-                    self.canvas, self.type, x, y, width, height)
+                    self.canvas, self.type, x, y, width, height, channel)
+        manager.add_icon(self)
+
+    def kill_all(self):
+        if hasattr(self.shape, "display_thread"):
+            if self.shape.display_thread != None:
+                self.shape.display_thread.join(5.0)
 
 
 class Dial():
-    def __init__(self, canvas, type, min_value, max_value, x, y, width, height, increment):
+    def __init__(self, canvas, type, min_value, max_value, x, y, width, height, increment, channel):
         self.canvas = canvas
         self.shape = None
+        self.channel = channel
         self.width = width
         self.height = height
         self.type = type
@@ -129,7 +142,13 @@ class Dial():
 
 
 class DigitalDisplay():
-    def __init__(self, canvas, type, x, y, width, height):
+    def __init__(self, canvas, type, x, y, width, height, channel):
+        self.channel = channel
+        if self.channel == "CAN_output":
+            self.bus = 0x8f
+        self.display_thread = None
+        self.shape = None
+        self.display = None
         self.canvas = canvas
         self.type = type
         self.x1 = x
@@ -139,15 +158,28 @@ class DigitalDisplay():
         self.d_x1, self.d_y1, self.d_x2, self.d_y2 = self.x1 + \
             6, self.y1 + 6, self.x2 - 6, self.y2 - 6
         self.create_display()
+        if hasattr(self, "bus"):
+            self.display_thread = threading.Thread(target=self.update_display)
+            self.display_thread.start()
 
     def create_display(self):
         # Background
-        self.canvas.create_rectangle(
+        self.shape = self.canvas.create_rectangle(
             self.x1, self.y1, self.x2, self.y2, fill='grey')
 
+        self.canvas.tag_bind(self.shape, "<Button-1>", self.on_press)
+
         # Display
-        self.canvas.create_rectangle(
+        self.display = self.canvas.create_rectangle(
             self.d_x1, self.d_y1, self.d_x2, self.d_y2, fill='black')
+
+    def update_display(self):
+        if hasattr(self, "bus"):
+            with can.interface.Bus(channel=0, interface="virtual") as bus:
+                print("Ready to read")
+                for msg in bus:
+                    print(msg)
+                    return
 
 
 if __name__ == "__main__":

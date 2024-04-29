@@ -1,9 +1,15 @@
 from tkinter import *
 from dev_screen import *
 from file_management import *
+from sim_manager import *
 
 
-def sim_screen(filename, manager, dev_coords):
+def on_exit(sim_manager, master):
+    sim_manager.on_exit()
+    master.destroy()
+
+
+def sim_screen(filename, dev_coords):
     master = Tk()
     master.title("Dashboard Simulator - " + filename)
     master.after(0, lambda: master.state('zoomed'))
@@ -13,14 +19,20 @@ def sim_screen(filename, manager, dev_coords):
     pw.pack(fill='both', expand=True)
 
     # Sidebar for icons
-    sidebar = Canvas(master, width=150, bg='#CCC', height=500,
+    sidebar = Canvas(master, width=150, height=500,
                      relief='sunken', borderwidth=2)
+    tk.Label(sidebar, text="Motor Controller Errors").pack()
+    selection_frame = tk.Frame(sidebar)
+    selection_frame.pack()
 
     mainarea = Canvas(master, bg='grey', width=500, height=500)
 
     # Main sim area
     x1, y1, x2, y2 = dev_coords
     sim_area = mainarea.create_rectangle(x1, y1, x2, y2, fill="white")
+
+    manager = SimManager(mainarea)
+    manager.create_selections(selection_frame)
 
     # Menu bar
     menubar = Menu(master)
@@ -42,5 +54,6 @@ def sim_screen(filename, manager, dev_coords):
     pw.add(mainarea)
 
     load_files(True, False, filename, manager, mainarea)
+    master.protocol("WM_DELETE_WINDOW", lambda: on_exit(manager, master))
 
     master.mainloop()

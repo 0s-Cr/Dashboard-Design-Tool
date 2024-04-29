@@ -22,8 +22,8 @@ def open_devscreen(master, manager, canvas):
     dev_screen(True, filename)
 
 
-def go_to_sim(master, filename, manager, dev_area):
-    sim_screen(filename, manager, dev_area.get_coords())
+def go_to_sim(master, filename, dev_area):
+    sim_screen(filename, dev_area.get_coords())
 
 
 def new_project(master):
@@ -67,7 +67,7 @@ def dev_screen(loading=bool, filename=str):
                           command=lambda: update_title_save(master, dev_area))
     file_menu.add_separator()
     file_menu.add_command(label="Simulate", command=lambda: go_to_sim(
-        master, filename, manager, dev_area))
+        master, filename, dev_area))
     file_menu.add_separator()
     file_menu.add_command(label="Exit", command=quit)
     menubar.add_cascade(label="File", menu=file_menu)
